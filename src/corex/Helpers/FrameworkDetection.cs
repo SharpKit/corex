@@ -22,90 +22,90 @@ namespace Corex.Helpers
         public int ServicePack { get; set; }
         public FrameworkVariant Variant { get; set; }
 
-        private static List<FrameworkVersion> _installedVersions;
-        public static List<FrameworkVersion> InstalledVersions
-        {
-            get
-            {
-                if (_installedVersions == null) _installedVersions = GetInstalled();
-                return _installedVersions;
-            }
-        }
+        //private static List<FrameworkVersion> _installedVersions;
+        //public static List<FrameworkVersion> InstalledVersions
+        //{
+        //    get
+        //    {
+        //        if (_installedVersions == null) _installedVersions = GetInstalled();
+        //        return _installedVersions;
+        //    }
+        //}
 
-        private static FrameworkVersion _Current;
-        public static FrameworkVersion Current
-        {
-            get
-            {
-                if (_Current == null && InstalledVersions.Count != 0) _Current = InstalledVersions[InstalledVersions.Count - 1];
-                return _Current;
-            }
-        }
+        //private static FrameworkVersion _Current;
+        //public static FrameworkVersion Current
+        //{
+        //    get
+        //    {
+        //        if (_Current == null && InstalledVersions.Count != 0) _Current = InstalledVersions[InstalledVersions.Count - 1];
+        //        return _Current;
+        //    }
+        //}
 
         // http://msdn.microsoft.com/en-us/kb/kbarticle.aspx?id=318785
         private static string registryBasePath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\";
 
-        private static List<FrameworkVersion> GetInstalled()
-        {
-            var list = new List<FrameworkVersion>();
-            list.Add(GetVersion("1.1.4322"));
-            list.Add(GetVersion("2.0.50727"));
-            list.Add(GetVersion("3.0"));
-            list.Add(GetVersion("3.5"));
-            list.Add(GetVersion("4", "4.0", FrameworkVariant.Client));
-            list.Add(GetVersion("4", "4.0", FrameworkVariant.Full));
-            list.Add(GetVersion("4", "4.5", FrameworkVariant.Client));
-            list.Add(GetVersion("4", "4.5", FrameworkVariant.Full));
-            for (var i = list.Count - 1; i >= 0; i--)
-            {
-                if (list[i] == null) list.RemoveAt(i);
-            }
-            if (list.IsEmpty()) //Unknown version or unix
-                list.Add(new FrameworkVersion(Environment.Version, FrameworkVariant.Full)); //Hint: mono.net has only the "full" variant
+        //private static List<FrameworkVersion> GetInstalled()
+        //{
+        //    var list = new List<FrameworkVersion>();
+        //    list.Add(GetVersion("1.1.4322"));
+        //    list.Add(GetVersion("2.0.50727"));
+        //    list.Add(GetVersion("3.0"));
+        //    list.Add(GetVersion("3.5"));
+        //    list.Add(GetVersion("4", "4.0", FrameworkVariant.Client));
+        //    list.Add(GetVersion("4", "4.0", FrameworkVariant.Full));
+        //    list.Add(GetVersion("4", "4.5", FrameworkVariant.Client));
+        //    list.Add(GetVersion("4", "4.5", FrameworkVariant.Full));
+        //    for (var i = list.Count - 1; i >= 0; i--)
+        //    {
+        //        if (list[i] == null) list.RemoveAt(i);
+        //    }
+        //    if (list.IsEmpty()) //Unknown version or unix
+        //        list.Add(new FrameworkVersion(Environment.Version, FrameworkVariant.Full)); //Hint: mono.net has only the "full" variant
 
-            list.Sort();
-            return list;
-        }
+        //    list.Sort();
+        //    return list;
+        //}
 
-        private static bool GetInstalled(string path)
-        {
-            var value = Registry.GetValue(registryBasePath + path, "Install", 0);
-            return value == null ? false : ((int)value == 0 ? false : true);
-        }
+        //private static bool GetInstalled(string path)
+        //{
+        //    var value = Registry.GetValue(registryBasePath + path, "Install", 0);
+        //    return value == null ? false : ((int)value == 0 ? false : true);
+        //}
 
-        private static int GetSP(string path)
-        {
-            var value = Registry.GetValue(registryBasePath + path, "SP", 0);
-            return value == null ? 0 : (int)value;
-        }
+        //private static int GetSP(string path)
+        //{
+        //    var value = Registry.GetValue(registryBasePath + path, "SP", 0);
+        //    return value == null ? 0 : (int)value;
+        //}
 
-        private static string GetExactVersion(string path)
-        {
-            var value = Registry.GetValue(registryBasePath + path, "Version", "");
-            return value == null ? "" : (string)value;
-        }
+        //private static string GetExactVersion(string path)
+        //{
+        //    var value = Registry.GetValue(registryBasePath + path, "Version", "");
+        //    return value == null ? "" : (string)value;
+        //}
 
-        public static FrameworkVersion GetVersion(string version, string exactVersion = "", FrameworkVariant variant = FrameworkVariant.Default)
-        {
-            var path = "v" + version;
-            if (variant != FrameworkVariant.Default) path += "\\" + variant.ToString();
-            if (!GetInstalled(path)) return null;
+        //public static FrameworkVersion GetVersion(string version, string exactVersion = "", FrameworkVariant variant = FrameworkVariant.Default)
+        //{
+        //    var path = "v" + version;
+        //    if (variant != FrameworkVariant.Default) path += "\\" + variant.ToString();
+        //    if (!GetInstalled(path)) return null;
 
-            if (exactVersion != "")
-            {
-                var exactVer = new Version(exactVersion);
-                var regVer = new Version(GetExactVersion(path));
-                if (exactVer.Major == regVer.Major && exactVer.Minor == regVer.Minor)
-                    version = new Version(exactVersion).ToString(2);
-                else
-                    return null;
-            }
+        //    if (exactVersion != "")
+        //    {
+        //        var exactVer = new Version(exactVersion);
+        //        var regVer = new Version(GetExactVersion(path));
+        //        if (exactVer.Major == regVer.Major && exactVer.Minor == regVer.Minor)
+        //            version = new Version(exactVersion).ToString(2);
+        //        else
+        //            return null;
+        //    }
 
-            var sp = GetSP(path);
-            var ver = new Version(version);
-            ver = new Version(ver.ToString(2));
-            return new FrameworkVersion(ver, variant) { ServicePack = sp };
-        }
+        //    var sp = GetSP(path);
+        //    var ver = new Version(version);
+        //    ver = new Version(ver.ToString(2));
+        //    return new FrameworkVersion(ver, variant) { ServicePack = sp };
+        //}
 
         public FrameworkVersion(Version version, FrameworkVariant variant = FrameworkVariant.Default)
         {
@@ -130,11 +130,11 @@ namespace Corex.Helpers
             return s;
         }
 
-        public static bool HasVersionkOrBetter(FrameworkVersion other)
-        {
-            if (Current == null) return false;
-            return Current.CompareTo(other) >= 0;
-        }
+        //public static bool HasVersionkOrBetter(FrameworkVersion other)
+        //{
+        //    if (Current == null) return false;
+        //    return Current.CompareTo(other) >= 0;
+        //}
 
     }
 

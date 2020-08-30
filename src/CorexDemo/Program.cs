@@ -20,15 +20,15 @@ namespace CorexDemo
 
         }
 
-        static void foo2()
-        {
-            //WindowsServiceHelper.CreateService(Process.GetCurrentProcess().MainModule.FileName);
-            Console.WriteLine(FrameworkVersion.HasVersionkOrBetter(new FrameworkVersion(new Version("4.0"), FrameworkVariant.Client)));
-            Console.Read();
-        }
+        //static void foo2()
+        //{
+        //    //WindowsServiceHelper.CreateService(Process.GetCurrentProcess().MainModule.FileName);
+        //    Console.WriteLine(FrameworkVersion.HasVersionkOrBetter(new FrameworkVersion(new Version("4.0"), FrameworkVariant.Client)));
+        //    Console.Read();
+        //}
         static void Main(string[] args)
         {
-            foo2();
+            //foo2();
         }
         void foo3()
         {
